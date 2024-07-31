@@ -12,6 +12,8 @@ service asgardeo:RegistrationService on webhookListener {
     remote function onAddUser(asgardeo:AddUserEvent event ) returns error? {
 
         log:printInfo(event.toJsonString());
+        log:printInfo("This is modified code");
+        
     }
 
     remote function onConfirmSelfSignup(asgardeo:GenericEvent event ) returns error? {
