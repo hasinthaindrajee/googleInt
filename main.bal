@@ -13,6 +13,7 @@ service asgardeo:RegistrationService on webhookListener {
 
         log:printInfo(event.toJsonString());
         log:printInfo("This is modified code");
+        log:printInfo(config:getAsString("GOOGLE_TOKEN"));
         
     }
 
