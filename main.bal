@@ -1,7 +1,6 @@
 import ballerinax/trigger.asgardeo;
 import ballerina/log;
 import ballerina/http;
-import ballerina/io;
 
 configurable asgardeo:ListenerConfig config = ?;
 
@@ -15,9 +14,13 @@ service asgardeo:RegistrationService on webhookListener {
     remote function onAddUser(asgardeo:AddUserEvent event ) returns error? {
 
         string username =  event.eventData?.userName ?: "dummyvalue";
-        io:println(event.eventData?.userName);
+        string firstname = event.eventData?.claims["http://wso2.org/claims/givenname"] ?: "dummyvalue";
+        string lastname = event.eventData?.claims["http://wso2.org/claims/lastname"] ?: "dummyvalue";
+
         log:printInfo("This is modified code");
         log:printInfo(username);
+        log:printInfo(firstname);
+        log:printInfo(lastname);
         log:printInfo(googleToken);
         
     }
