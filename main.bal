@@ -5,6 +5,8 @@ import ballerina/config;
 
 configurable asgardeo:ListenerConfig config = ?;
 
+configurable string googleToken = ?;
+
 listener http:Listener httpListener = new(8090);
 listener asgardeo:Listener webhookListener =  new(config,httpListener);
 
@@ -14,7 +16,7 @@ service asgardeo:RegistrationService on webhookListener {
 
         log:printInfo(event.toJsonString());
         log:printInfo("This is modified code");
-        log:printInfo(config:getAsString("GOOGLE_TOKEN"));
+        log:printInfo(googleToken);
         
     }
 
