@@ -6,8 +6,19 @@ configurable asgardeo:ListenerConfig config = ?;
 
 configurable string googleToken = ?;
 
+final string BASE_URL = "https://admin.googleapis.com/admin/directory/v1";
+
+// Load the access token from config.toml
+
 listener http:Listener httpListener = new(8090);
 listener asgardeo:Listener webhookListener =  new(config,httpListener);
+// Load the access token from config.toml
+
+http:Client googleClient = check new ("https://admin.googleapis.com/admin/directory/v1",
+        auth = {
+            token: googleToken
+        }
+    );
 
 service asgardeo:RegistrationService on webhookListener {
 
@@ -22,6 +33,29 @@ service asgardeo:RegistrationService on webhookListener {
         log:printInfo(firstname);
         log:printInfo(lastname);
         log:printInfo(googleToken);
+
+         json user = {
+            "name": {
+                "givenName": firstname,
+                "familyName": lastname
+            },
+            "password": "Hasintha@123",
+            "primaryEmail": username
+        };
+
+        http:Response|error response = googleClient->post("/users", user);
+        if (response is error) {
+            log:printError("Failed to provision user", response);
+            return;
+        }
+
+        json|error result = response.getJsonPayload();
+        if (result is error) {
+            log:printError("Failed to parse response", result);
+            return;
+        } else {
+            log:printInfo(result.toJsonString());
+        }
         
     }
 
@@ -35,6 +69,7 @@ service asgardeo:RegistrationService on webhookListener {
         log:printInfo(event.toJsonString());
     }
 }
+
 
 service /ignore on httpListener {}
 
