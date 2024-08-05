@@ -1,6 +1,7 @@
 import ballerinax/trigger.asgardeo;
 import ballerina/log;
 import ballerina/http;
+import ballerina/io;
 
 configurable asgardeo:ListenerConfig config = ?;
 
@@ -13,8 +14,10 @@ service asgardeo:RegistrationService on webhookListener {
 
     remote function onAddUser(asgardeo:AddUserEvent event ) returns error? {
 
-        log:printInfo(event.toJsonString());
+        string username =  event.eventData?.userName ?: "dummyvalue";
+        io:println(event.eventData?.userName);
         log:printInfo("This is modified code");
+        log:printInfo(username);
         log:printInfo(googleToken);
         
     }
